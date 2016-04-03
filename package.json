@@ -1,0 +1,27 @@
+{
+  "name": "devops",
+  "version": "1.0.0",
+  "description": "Deploy system",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trendever/devops.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trendever/devops/issues"
+  },
+  "homepage": "https://github.com/trendever/devops#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "co-fs": "^1.2.0",
+    "gulp": "^3.9.1",
+    "gulp-git": "^1.7.0",
+    "require-dir": "^0.3.0",
+    "thunkify": "^2.1.2"
+  }
+}
