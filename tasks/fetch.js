@@ -13,7 +13,7 @@ const reposDir = require("../config").reposPath;
 module.exports = function (name, remote, branch) {
     const pathToRepo = path.join(reposDir, name);
     branch = branch || "master";
-    co(function*() {
+    return co(function*() {
 
         try {
             yield fsStat(pathToRepo);
@@ -23,8 +23,6 @@ module.exports = function (name, remote, branch) {
         yield gitFetch("", "", {args: " --all", cwd: pathToRepo});
         yield gitCheckout(branch, {cwd: pathToRepo})
 
-    }).catch(function (err) {
-        console.trace(err)
     });
 };
 

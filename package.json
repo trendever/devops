@@ -19,6 +19,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "co-fs": "^1.2.0",
+    "command-line-args": "^2.1.6",
     "gulp": "^3.9.1",
     "gulp-git": "^1.7.0",
     "require-dir": "^0.3.0",
