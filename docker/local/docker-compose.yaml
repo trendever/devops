@@ -1,0 +1,69 @@
+version: "2"
+services:
+  data:
+    image: busybox
+    volumes:
+      - ../../../:/services:rw
+  mail:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/service.mail
+    depends_on:
+      - db
+    command: bin/service start
+  sms:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/service.sms
+    depends_on:
+      - db
+    command: bin/service start
+  chat:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/service.chat
+    depends_on:
+      - db
+    command: bin/service run
+  auth:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/service.auth
+    depends_on:
+      - db
+    command: bin/service start
+  core:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/core
+    depends_on:
+      - db
+    command: bash ./start.sh
+    ports:
+      - 3004:3004
+  public:
+    image: debian:jessie
+    volumes_from:
+      - data
+    working_dir: /services/service.public.api
+    depends_on:
+      - db
+    command: bin/service run
+    ports:
+      - 8081:8081
+  db:
+    image: "postgres:9.3"
+    environment:
+      POSTGRES_PASSWORD: 1234
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - dbdata:/var/lib/postgresql/data/pgdata:rw
+    ports:
+      - "5432:5432"
+volumes:
+  dbdata: {}
