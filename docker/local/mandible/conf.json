@@ -1,0 +1,16 @@
+{
+    "Port": 8080,
+    "MaxFileSize": 20971520,
+    "HashLength": 7,
+    "UserAgent": "ImgurGo (https://github.com/gophergala/ImgurGo)",
+    "Stores" : [
+        {
+            "Type" : "local",
+            "StoreRoot": "/data",
+            "NamePathRegex" : "^([a-zA-Z0-9])([a-zA-Z0-9]).*",
+            "NamePathMap" : "${ImageSize}/${1}/${2}/${ImageName}"
+        }
+    ],
+    "DatadogEnabled": false,
+    "DatadogHostname": "127.0.0.1"
+}
