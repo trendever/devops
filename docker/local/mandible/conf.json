@@ -5,10 +5,13 @@
     "UserAgent": "ImgurGo (https://github.com/gophergala/ImgurGo)",
     "Stores" : [
         {
-            "Type" : "local",
-            "StoreRoot": "/data",
-            "NamePathRegex" : "^([a-zA-Z0-9])([a-zA-Z0-9]).*",
-            "NamePathMap" : "${ImageSize}/${1}/${2}/${ImageName}"
+            "Type" : "selectel",
+            "container" : "pub",
+            "user": "54431",
+            "key": "cnH0eeqj",
+            "rootPath" : "/upload",
+            "NamePathRegex" : "",
+            "NamePathMap" : "${ImageSize}/${ImageName}"
         }
     ],
     "DatadogEnabled": false,

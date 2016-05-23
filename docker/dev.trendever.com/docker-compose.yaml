@@ -1,0 +1,9 @@
+version: "2"
+services:
+  mandible:
+    image: "girokon/mandible"
+    restart: always
+    ports:
+      - "127.0.0.1:8089:8080"
+    volumes:
+      - /home/dev2/project/mandible:/etc/mandible:ro
