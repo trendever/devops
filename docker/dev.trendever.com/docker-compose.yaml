@@ -13,3 +13,21 @@ services:
     ports:
       - "8222:8222"
       - "127.0.0.1:4222:4222"
+  influxdb:
+    image: influxdb:alpine
+    restart: always
+    ports:
+      - 127.0.0.1:8083:8083
+      - 127.0.0.1:8086:8086
+    volumes:
+     - influxdata:/var/lib/influxdb:rw
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      GF_SERVER_ROOT_URL: http://dev.trendever.com:3000
+      GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
+volumes:
+  influxdata: {}
