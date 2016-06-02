@@ -28,5 +28,9 @@ services:
     environment:
       GF_SERVER_ROOT_URL: http://trendever.com:3000
       GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
+  redis:
+    image: redis
+    ports:
+     - 127.0.0.1:6379:6379
 volumes:
   influxdata: {}

@@ -45,9 +45,12 @@ services:
     working_dir: /services/core
     depends_on:
       - db
-    command: bash ./start.sh
+    command: bin/service start
+    environment:
+      WEB_ROOT: /services/core
     ports:
       - 3004:3004
+      - 6060:6060
   public:
     image: debian:jessie
     volumes_from:
@@ -55,9 +58,11 @@ services:
     working_dir: /services/service.public.api
     depends_on:
       - db
+      - redis
     command: bin/service start
     ports:
       - 8081:8081
+      - 6061:6060
   db:
     image: "postgres:9.3"
     environment:
@@ -99,6 +104,8 @@ services:
     command: bin/service start
   redis:
     image: redis
+    ports:
+     - 6379:6379
   sentry:
     image: sentry:8.4.1
     links:
