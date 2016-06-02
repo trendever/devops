@@ -30,6 +30,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
   redis:
     image: redis
+    restart: always
     ports:
      - 127.0.0.1:6379:6379
 volumes:
