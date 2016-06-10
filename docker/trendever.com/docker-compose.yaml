@@ -1,5 +1,6 @@
 version: "2"
 services:
+
   mandible:
     image: "girokon/mandible"
     restart: always
@@ -7,11 +8,13 @@ services:
       - "127.0.0.1:8080:8080"
     volumes:
       - /home/live/project/mandible:/etc/mandible:ro
+
   nats:
     image: "nats"
     restart: always
     ports:
       - "127.0.0.1:4222:4222"
+
   influxdb:
     image: influxdb:alpine
     restart: always
@@ -20,6 +23,7 @@ services:
       - 127.0.0.1:8086:8086
     volumes:
      - influxdata:/var/lib/influxdb:rw
+
   grafana:
     image: grafana/grafana
     restart: always
@@ -28,10 +32,83 @@ services:
     environment:
       GF_SERVER_ROOT_URL: http://trendever.com:3000
       GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
+
   redis:
     image: redis
     restart: always
     ports:
      - 127.0.0.1:6379:6379
+
+  consul:
+    restart: always
+    image: "consul:latest"
+    hostname: "consul"
+    ports:
+      - "127.0.0.1:8500:8500"
+      - "8300"
+    command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
+    volumes:
+      - /home/live/consul-data:/consul/data
+
+  consul_slave:
+    restart: always
+    image: "consul:latest"
+    ports:
+      - "8300"
+    command: "agent -server -join consul"
+    volumes:
+      - /home/live/consul-data:/consul/data
+
+  core:
+    restart: always  
+    image: dev.trendever.com:5000/master_core
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
+  service.auth:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.auth
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
+  service.public.api:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.public.api
+    working_dir: /project
+    ports:
+      - 8285:8085
+    environment:
+      - CONSUL_HOST=consul:8500
+  
+  service.mail:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.mail
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
+  service.sms:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.sms
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
+  service.chat:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.chat
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
+  service.telebot:
+    restart: always  
+    image: dev.trendever.com:5000/master_service.telebot
+    working_dir: /project
+    environment:
+      - CONSUL_HOST=consul:8500
+
 volumes:
   influxdata: {}
