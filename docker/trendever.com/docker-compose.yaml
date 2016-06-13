@@ -45,17 +45,7 @@ services:
     hostname: "consul"
     ports:
       - "127.0.0.1:8500:8500"
-      - "8300"
-    command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
-    volumes:
-      - /home/live/consul-data:/consul/data
-
-  consul_slave:
-    restart: always
-    image: "consul:latest"
-    ports:
-      - "8300"
-    command: "agent -server -join consul"
+    command: "agent -dev -server -ui -client 0.0.0.0"
     volumes:
       - /home/live/consul-data:/consul/data
 
@@ -78,7 +68,7 @@ services:
     image: dev.trendever.com:5000/master_service.public.api
     working_dir: /project
     ports:
-      - 8285:8085
+      - "8085:8085"
     environment:
       - CONSUL_HOST=consul:8500
   
