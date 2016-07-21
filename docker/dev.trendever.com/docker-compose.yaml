@@ -49,6 +49,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_core
     working_dir: /project
+    depends_on:
+      - etcd
     ports:
       - "127.0.0.1:4004:4004"
     environment:
@@ -59,6 +61,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_auth
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/auth
@@ -67,6 +71,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_api
     working_dir: /project
+    depends_on:
+      - etcd
     ports:
       - "127.0.0.1:8085:8085"
     environment:
@@ -77,6 +83,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_mail
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/mail
@@ -85,6 +93,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_sms
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/sms
@@ -93,6 +103,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_chat
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/chat
@@ -101,6 +113,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_fetcher
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/fetcher
@@ -109,6 +123,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_savetrend
     working_dir: /project
+    depends_on:
+      - etcd
     volumes:
      - persistent:/var/persistent:rw
     environment:
@@ -119,6 +135,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_wantit
     working_dir: /project
+    depends_on:
+      - etcd
     volumes:
      - persistent:/var/persistent:rw
     environment:
@@ -129,6 +147,8 @@ services:
     restart: always  
     image: dev.trendever.com:5000/dev_telebot
     working_dir: /project
+    depends_on:
+      - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/telebot
