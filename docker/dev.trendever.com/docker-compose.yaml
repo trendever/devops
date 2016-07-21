@@ -34,5 +34,117 @@ services:
     restart: always
     ports:
      - 127.0.0.1:6379:6379
+
+  etcd:
+    image: quay.io/coreos/etcd:v2.3.0
+    command: -advertise-client-urls=http://0.0.0.0:2379 -listen-client-urls=http://0.0.0.0:2379
+    environment:
+      ETCD_DATA_DIR: /var/lib/etcd
+    volumes:
+     - etcd:/var/lib/etcd:rw
+    ports:
+      - 127.0.0.1:2379:2379
+
+  core:
+    restart: always  
+    image: dev.trendever.com:5000/dev_core
+    working_dir: /project
+    ports:
+      - "127.0.0.1:4004:4004"
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/core
+
+  auth:
+    restart: always  
+    image: dev.trendever.com:5000/dev_auth
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/auth
+
+  api:
+    restart: always  
+    image: dev.trendever.com:5000/dev_api
+    working_dir: /project
+    ports:
+      - "127.0.0.1:8085:8085"
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/api
+  
+  mail:
+    restart: always  
+    image: dev.trendever.com:5000/dev_mail
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/mail
+
+  sms:
+    restart: always  
+    image: dev.trendever.com:5000/dev_sms
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/sms
+
+  chat:
+    restart: always  
+    image: dev.trendever.com:5000/dev_chat
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/chat
+
+  fetcher:
+    restart: always  
+    image: dev.trendever.com:5000/dev_fetcher
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/fetcher
+
+  savetrend:
+    restart: always  
+    image: dev.trendever.com:5000/dev_savetrend
+    working_dir: /project
+    volumes:
+     - persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/savetrend
+
+  wantit:
+    restart: always  
+    image: dev.trendever.com:5000/dev_wantit
+    working_dir: /project
+    volumes:
+     - persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/wantit
+
+  telebot:
+    restart: always  
+    image: dev.trendever.com:5000/dev_telebot
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/telebot
+
+  db:
+    restart: always
+    image: "postgres:9.3"
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - dbdata:/var/lib/postgresql/data/pgdata:rw
+    ports:
+      - "127.0.0.1:5432:5432"
+
 volumes:
   influxdata: {}
+  etcd: {}
+  dbdata: {}
+  persistent: {}
