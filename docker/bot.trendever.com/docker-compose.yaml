@@ -1,0 +1,11 @@
+version: "2"
+services:
+
+  fetcher:
+    restart: always  
+    image: dev.trendever.com:5000/master_fetcher
+    working_dir: /project
+    network_mode: "host"
+    volumes:
+    - /home/trendever/config:/project/config:ro
+

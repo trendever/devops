@@ -5,39 +5,15 @@ services:
     image: "girokon/mandible"
     restart: always
     ports:
-      - "192.168.0.7:8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - /home/live/project/mandible:/etc/mandible:ro
-
-  nats:
-    image: "nats"
-    restart: always
-    ports:
-      - "192.168.0.7:4222:4222"
-
-  influxdb:
-    image: influxdb:alpine
-    restart: always
-    ports:
-      - 127.0.0.1:8083:8083
-      - 127.0.0.1:8086:8086
-    volumes:
-     - influxdata:/var/lib/influxdb:rw
-
-  grafana:
-    image: grafana/grafana
-    restart: always
-    ports:
-      - 3000:3000
-    environment:
-      GF_SERVER_ROOT_URL: http://trendever.com:3000
-      GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
 
   redis:
     image: redis
     restart: always
     ports:
-     - 192.168.0.7:6379:6379
+     - 127.0.0.1:6379:6379
 
   etcd:
     image: quay.io/coreos/etcd:v2.3.7
@@ -49,30 +25,6 @@ services:
     ports:
       - 127.0.0.1:2379:2379
 
-  savetrend:
-    restart: always  
-    image: dev.trendever.com:5000/master_savetrend
-    working_dir: /project
-    volumes:
-     - /home/live/bot-persistent:/var/persistent:rw
-    depends_on:
-      - etcd
-    environment:
-      - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/savetrend
-
-  wantit:
-    restart: always  
-    image: dev.trendever.com:5000/master_wantit
-    working_dir: /project
-    volumes:
-     - /home/live/bot-persistent:/var/persistent:rw
-    depends_on:
-      - etcd
-    environment:
-      - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/wantit
-
   core:
     restart: always  
     image: dev.trendever.com:5000/master_core
@@ -83,7 +35,7 @@ services:
       - "127.0.0.1:4004:4004"
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/core
+      - ETCD_PATH=live2/core
 
   auth:
     restart: always  
@@ -93,7 +45,7 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/auth
+      - ETCD_PATH=live2/auth
 
   api:
     restart: always  
@@ -102,10 +54,10 @@ services:
     depends_on:
       - etcd
     ports:
-      - "127.0.0.1:8085:8085"
+      - "192.168.0.9:8085:8085"
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/api
+      - ETCD_PATH=live2/api
   
   mail:
     restart: always  
@@ -115,7 +67,7 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/mail
+      - ETCD_PATH=live2/mail
 
   sms:
     restart: always  
@@ -125,7 +77,7 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/sms
+      - ETCD_PATH=live2/sms
 
   chat:
     restart: always  
@@ -135,7 +87,7 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/chat
+      - ETCD_PATH=live2/chat
 
   telebot:
     restart: always  
@@ -145,8 +97,9 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/telebot
+      - ETCD_PATH=live2/telebot
+
+
 
 volumes:
-  influxdata: {}
   etcd: {}
