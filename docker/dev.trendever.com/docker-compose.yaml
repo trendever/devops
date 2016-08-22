@@ -38,6 +38,7 @@ services:
   etcd:
     image: quay.io/coreos/etcd:v2.3.7
     command: -advertise-client-urls=http://0.0.0.0:2379 -listen-client-urls=http://0.0.0.0:2379
+    restart: always
     environment:
       ETCD_DATA_DIR: /var/lib/etcd
     volumes:
@@ -108,6 +109,8 @@ services:
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/chat
+    ports:
+      - "127.0.0.1:2010:2010"
 
   fetcher:
     restart: always  
@@ -152,6 +155,18 @@ services:
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/telebot
+
+  payments:
+    restart: always  
+    image: dev.trendever.com:5000/dev_payments
+    working_dir: /project
+    ports:
+      - 127.0.0.1:7780:7780
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/payments
 
   db:
     restart: always
