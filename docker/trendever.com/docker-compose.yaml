@@ -1,13 +1,6 @@
 version: "2"
 services:
 
-  mandible:
-    image: "girokon/mandible"
-    restart: always
-    ports:
-      - "192.168.0.7:8080:8080"
-    volumes:
-      - /home/live/project/mandible:/etc/mandible:ro
 
   nats:
     image: "nats"
@@ -40,6 +33,7 @@ services:
      - 192.168.0.7:6379:6379
 
   etcd:
+    restart: always
     image: quay.io/coreos/etcd:v2.3.7
     command: -advertise-client-urls=http://0.0.0.0:2379 -listen-client-urls=http://0.0.0.0:2379
     environment:
@@ -147,6 +141,63 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=live1/telebot
 
+  payments:
+    restart: always  
+    image: dev.trendever.com:5000/master_payments
+    working_dir: /project
+    ports:
+      - 127.0.0.1:7780:7780
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/payments
+
+  elasticsync:
+    restart: always
+    image: dev.trendever.com:5000/master_elasticsync
+    working_dir: /project
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/elasticsync
+
+  push:
+    restart: always
+    image: dev.trendever.com:5000/master_push
+    working_dir: /project
+    volumes:
+     - /home/live/configs/apn:/var/persistent:ro
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/push
+
+  mandible:
+    restart: always  
+    image: dev.trendever.com:5000/master_mandible
+    working_dir: /project
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live/mandible
+    ports:
+      - "192.168.0.7:8080:8080"
+
+  elastic:
+    restart: always
+    image: elasticsearch:latest
+    volumes:
+      - elasticdata:/usr/share/elasticsearch:rw
+    ports:
+      - 127.0.0.1:9200:9200
+      - 127.0.0.1:9300:9300
+    command: elasticsearch
+
 volumes:
-  influxdata: {}
   etcd: {}
+  influxdata: {}
+  elasticdata: {}

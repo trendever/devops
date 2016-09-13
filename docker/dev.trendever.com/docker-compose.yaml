@@ -1,12 +1,5 @@
 version: "2"
 services:
-  mandible:
-    image: "girokon/mandible"
-    restart: always
-    ports:
-      - "127.0.0.1:8089:8080"
-    volumes:
-      - /home/dev2/project/mandible:/etc/mandible:ro
   nats:
     image: "nats"
     restart: always
@@ -58,6 +51,19 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/core
 
+  checker:
+    restart: always
+    image: dev.trendever.com:5000/dev_checker
+    working_dir: /project
+    depends_on:
+      - etcd
+    volumes:
+     - persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/checker
+
+
   auth:
     restart: always  
     image: dev.trendever.com:5000/dev_auth
@@ -99,6 +105,18 @@ services:
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/sms
+
+  push:
+    restart: always
+    image: dev.trendever.com:5000/dev_push
+    working_dir: /project
+    volumes:
+     - persistent:/var/persistent:ro
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/push
 
   chat:
     restart: always  
@@ -168,6 +186,16 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/payments
 
+  elasticsync:
+    restart: always
+    image: dev.trendever.com:5000/dev_elasticsync
+    working_dir: /project
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/elasticsync
+
   db:
     restart: always
     image: "postgres:9.3"
@@ -178,8 +206,32 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
 
+  elastic:
+    restart: always
+    image: elasticsearch:latest
+    volumes:
+      - elasticdata:/usr/share/elasticsearch:rw
+    ports:
+      - 127.0.0.1:9200:9200
+      - 127.0.0.1:9300:9300
+    command: elasticsearch
+
+  mandible:
+    restart: always  
+    image: dev.trendever.com:5000/dev_mandible
+    working_dir: /project
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=dev/mandible
+    ports:
+      - "127.0.0.1:8089:8089"
+
 volumes:
   influxdata: {}
   etcd: {}
   dbdata: {}
+  elasticdata: {}
   persistent: {}
+
