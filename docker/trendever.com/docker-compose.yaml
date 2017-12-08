@@ -1,13 +1,16 @@
 version: "2"
 services:
-
-
   nats:
-    image: "nats"
+    image: nats-streaming
     restart: always
+    volumes:
+      - natsdata:/data:rw
+    entrypoint: /nats-streaming-server -st file -dir /data -cid stan -SD -ma 0s -mb 0 -mm 100000
     ports:
       - "192.168.0.7:4222:4222"
-
+      - "127.0.0.1:8222:8222"
+      - "127.0.0.1:4222:4222"
+      - "10.8.0.1:4222:4222"
   influxdb:
     image: influxdb:alpine
     restart: always
@@ -16,7 +19,6 @@ services:
       - 127.0.0.1:8086:8086
     volumes:
      - influxdata:/var/lib/influxdb:rw
-
   grafana:
     image: grafana/grafana
     restart: always
@@ -25,7 +27,6 @@ services:
     environment:
       GF_SERVER_ROOT_URL: http://trendever.com:3000
       GF_SECURITY_ADMIN_PASSWORD: "devsecretpass"
-
   redis:
     image: redis
     restart: always
@@ -33,39 +34,15 @@ services:
      - 192.168.0.7:6379:6379
 
   etcd:
-    restart: always
     image: quay.io/coreos/etcd:v2.3.7
     command: -advertise-client-urls=http://0.0.0.0:2379 -listen-client-urls=http://0.0.0.0:2379
+    restart: always
     environment:
       ETCD_DATA_DIR: /var/lib/etcd
     volumes:
      - etcd:/var/lib/etcd:rw
     ports:
       - 127.0.0.1:2379:2379
-
-  savetrend:
-    restart: always  
-    image: dev.trendever.com:5000/master_savetrend
-    working_dir: /project
-    volumes:
-     - /home/live/bot-persistent:/var/persistent:rw
-    depends_on:
-      - etcd
-    environment:
-      - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/savetrend
-
-  wantit:
-    restart: always  
-    image: dev.trendever.com:5000/master_wantit
-    working_dir: /project
-    volumes:
-     - /home/live/bot-persistent:/var/persistent:rw
-    depends_on:
-      - etcd
-    environment:
-      - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/wantit
 
   core:
     restart: always  
@@ -78,6 +55,27 @@ services:
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=live1/core
+
+  trendcoin:
+    restart: always
+    image: dev.trendever.com:5000/master_trendcoin
+    working_dir: /project
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/trendcoin
+
+  checker:
+    restart: always
+    image: dev.trendever.com:5000/master_checker
+    working_dir: /project
+    depends_on:
+      - etcd
+    volumes:
+     - /home/live/bot-persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/checker
+
 
   auth:
     restart: always  
@@ -121,6 +119,18 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=live1/sms
 
+  push:
+    restart: always
+    image: dev.trendever.com:5000/master_push
+    working_dir: /project
+    volumes:
+     - /home/live/configs/apn:/var/persistent:ro
+    depends_on:
+      - etcd
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/push
+
   chat:
     restart: always  
     image: dev.trendever.com:5000/master_chat
@@ -130,6 +140,30 @@ services:
     environment:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=live1/chat
+
+  savetrend:
+    restart: always  
+    image: dev.trendever.com:5000/master_savetrend
+    working_dir: /project
+    depends_on:
+      - etcd
+    volumes:
+     - /home/live/bot-persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/savetrend
+
+  wantit:
+    restart: always  
+    image: dev.trendever.com:5000/master_wantit
+    working_dir: /project
+    depends_on:
+      - etcd
+    volumes:
+     - /home/live/bot-persistent:/var/persistent:rw
+    environment:
+      - ETCD_HOST=http://etcd:2379
+      - ETCD_PATH=live1/wantit
 
   telebot:
     restart: always  
@@ -163,17 +197,28 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=live1/elasticsync
 
-  push:
+  accountstore:
     restart: always
-    image: dev.trendever.com:5000/master_push
+    image: dev.trendever.com:5000/master_accountstore
     working_dir: /project
-    volumes:
-     - /home/live/configs/apn:/var/persistent:ro
     depends_on:
       - etcd
+    ports:
+      - "127.0.0.1:5409:5409"
+      - "10.8.0.1:5409:5409"
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live1/push
+      - ETCD_PATH=live1/accountstore
+
+  elastic:
+    restart: always
+    image: elasticsearch:2
+    volumes:
+      - elasticdata:/usr/share/elasticsearch:rw
+    ports:
+      - 127.0.0.1:9200:9200
+      - 127.0.0.1:9300:9300
+    command: elasticsearch
 
   mandible:
     restart: always  
@@ -183,21 +228,12 @@ services:
       - etcd
     environment:
       - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=live/mandible
+      - ETCD_PATH=live1/mandible
     ports:
       - "192.168.0.7:8080:8080"
 
-  elastic:
-    restart: always
-    image: elasticsearch:latest
-    volumes:
-      - elasticdata:/usr/share/elasticsearch:rw
-    ports:
-      - 127.0.0.1:9200:9200
-      - 127.0.0.1:9300:9300
-    command: elasticsearch
-
 volumes:
-  etcd: {}
   influxdata: {}
+  etcd: {}
   elasticdata: {}
+  natsdata: {}
