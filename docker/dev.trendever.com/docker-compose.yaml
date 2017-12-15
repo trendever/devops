@@ -44,7 +44,7 @@ services:
 
   core:
     restart: always  
-    image: dev.trendever.com:5000/dev_core
+    image: dev.trendever.com:5000/services/dev_core
     working_dir: /project
     depends_on:
       - etcd
@@ -56,7 +56,7 @@ services:
 
   trendcoin:
     restart: always
-    image: dev.trendever.com:5000/dev_trendcoin
+    image: dev.trendever.com:5000/services/dev_trendcoin
     working_dir: /project
     environment:
       - ETCD_HOST=http://etcd:2379
@@ -64,7 +64,7 @@ services:
 
   checker:
     restart: always
-    image: dev.trendever.com:5000/dev_checker
+    image: dev.trendever.com:5000/services/dev_checker
     working_dir: /project
     depends_on:
       - etcd
@@ -77,7 +77,7 @@ services:
 
   auth:
     restart: always  
-    image: dev.trendever.com:5000/dev_auth
+    image: dev.trendever.com:5000/services/dev_auth
     working_dir: /project
     depends_on:
       - etcd
@@ -87,7 +87,7 @@ services:
 
   api:
     restart: always  
-    image: dev.trendever.com:5000/dev_api
+    image: dev.trendever.com:5000/services/dev_api
     working_dir: /project
     depends_on:
       - etcd
@@ -99,7 +99,7 @@ services:
   
   mail:
     restart: always  
-    image: dev.trendever.com:5000/dev_mail
+    image: dev.trendever.com:5000/services/dev_mail
     working_dir: /project
     depends_on:
       - etcd
@@ -109,7 +109,7 @@ services:
 
   sms:
     restart: always  
-    image: dev.trendever.com:5000/dev_sms
+    image: dev.trendever.com:5000/services/dev_sms
     working_dir: /project
     depends_on:
       - etcd
@@ -119,7 +119,7 @@ services:
 
   push:
     restart: always
-    image: dev.trendever.com:5000/dev_push
+    image: dev.trendever.com:5000/services/dev_push
     working_dir: /project
     volumes:
      - persistent:/var/persistent:ro
@@ -131,7 +131,7 @@ services:
 
   chat:
     restart: always  
-    image: dev.trendever.com:5000/dev_chat
+    image: dev.trendever.com:5000/services/dev_chat
     working_dir: /project
     depends_on:
       - etcd
@@ -143,7 +143,7 @@ services:
 
   fetcher:
     restart: always  
-    image: dev.trendever.com:5000/dev_fetcher
+    image: dev.trendever.com:5000/services/dev_fetcher
     working_dir: /project
     depends_on:
       - etcd
@@ -155,7 +155,7 @@ services:
 
   savetrend:
     restart: always  
-    image: dev.trendever.com:5000/dev_savetrend
+    image: dev.trendever.com:5000/services/dev_savetrend
     working_dir: /project
     depends_on:
       - etcd
@@ -167,7 +167,7 @@ services:
 
   wantit:
     restart: always  
-    image: dev.trendever.com:5000/dev_wantit
+    image: dev.trendever.com:500/services/dev_wantit
     working_dir: /project
     depends_on:
       - etcd
@@ -179,7 +179,7 @@ services:
 
   telebot:
     restart: always  
-    image: dev.trendever.com:5000/dev_telebot
+    image: dev.trendever.com:5000/services/dev_telebot
     working_dir: /project
     depends_on:
       - etcd
@@ -189,7 +189,7 @@ services:
 
   payments:
     restart: always  
-    image: dev.trendever.com:5000/dev_payments
+    image: dev.trendever.com:5000/services/dev_payments
     working_dir: /project
     ports:
       - 127.0.0.1:7777:7777
@@ -202,7 +202,7 @@ services:
 
   elasticsync:
     restart: always
-    image: dev.trendever.com:5000/dev_elasticsync
+    image: dev.trendever.com:5000/services/dev_elasticsync
     working_dir: /project
     depends_on:
       - etcd
@@ -212,7 +212,7 @@ services:
 
   accountstore:
     restart: always
-    image: dev.trendever.com:5000/dev_accountstore
+    image: dev.trendever.com:5000/services/dev_accountstore
     working_dir: /project
     depends_on:
       - etcd

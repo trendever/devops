@@ -3,7 +3,7 @@ services:
 
   fetcher:
     restart: always  
-    image: dev.trendever.com:5000/master_fetcher
+    image: dev.trendever.com:5000/services/master_fetcher
     working_dir: /project
     network_mode: "host"
     ports:
