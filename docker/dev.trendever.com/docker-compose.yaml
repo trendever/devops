@@ -167,7 +167,7 @@ services:
 
   wantit:
     restart: always  
-    image: dev.trendever.com:500/services/dev_wantit
+    image: dev.trendever.com:5000/services/dev_wantit
     working_dir: /project
     depends_on:
       - etcd
