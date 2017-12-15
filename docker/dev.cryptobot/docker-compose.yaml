@@ -1,0 +1,56 @@
+version: "3"
+services:
+  core:
+    restart: always
+    image: dev.trendever.com:5000/cryptobot/dev_core
+    working_dir: /project
+    networks:
+      - crypto
+
+  tg:
+    restart: always
+    image: dev.trendever.com:5000/cryptobot/dev_telegram
+    working_dir: /project
+    networks:
+      - crypto
+
+  api:
+    restart: always
+    image: dev.trendever.com:5000/cryptobot/dev_api
+    working_dir: /project
+    networks:
+      - crypto
+
+  db:
+    restart: always
+    image: "postgres:9-alpine"
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - dbdata:/var/lib/postgresql/data/pgdata:rw
+    networks:
+      - crypto
+    ports:
+      - 127.0.0.1:5433:5432
+
+  rabbit:
+    restart: always
+    image: "rabbitmq:3-management-alpine"
+    environment:
+      RABBITMQ_DEFAULT_USER: "bun"
+      RABBITMQ_DEFAULT_PASS: "alert"
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq:rw
+    networks:
+      - crypto
+    ports:
+      - 127.0.0.1:5672:5672
+      # managment web interface
+      - 127.0.0.1:8070:15672
+
+networks:
+  crypto:
+
+volumes:
+  dbdata: {}
+  rabbitdata: {}
