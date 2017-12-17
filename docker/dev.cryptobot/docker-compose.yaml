@@ -4,27 +4,29 @@ services:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_core
     volumes:
-        - ${CONFIGS_PATH}/cryptobot/core.yaml:/core.yaml:ro
+      - ${CONFIGS_PATH}/cryptobot/core.yaml:/core.yaml:ro
     depends_on:
-        - db
-        - rabbit
+      - db
+      - rabbit
 
-  tg:
+  telegram:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_telegram
     volumes:
-        - ${CONFIGS_PATH}/cryptobot/telegram.yaml:/telegram.yaml:ro
+      - ${CONFIGS_PATH}/cryptobot/telegram.yaml:/telegram.yaml:ro
     depends_on:
-        - db
-        - rabbit
+      - db
+      - rabbit
 
   api:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_api
     volumes:
-        - ${CONFIGS_PATH}/cryptobot/api.yaml:/api.yaml:ro
+      - ${CONFIGS_PATH}/cryptobot/api.yaml:/api.yaml:ro
     depends_on:
-        - rabbit
+      - rabbit
+    ports:
+      - 127.0.0.1:8083:8083
 
   db:
     restart: always
