@@ -1,25 +1,30 @@
-version: "3"
+version: "2"
 services:
   core:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_core
-    working_dir: /project
-    networks:
-      - crypto
+    volumes:
+        - ${CONFIGS_PATH}/cryptobot/core.yaml:/core.yaml:ro
+    depends_on:
+        - db
+        - rabbit
 
   tg:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_telegram
-    working_dir: /project
-    networks:
-      - crypto
+    volumes:
+        - ${CONFIGS_PATH}/cryptobot/telegram.yaml:/telegram.yaml:ro
+    depends_on:
+        - db
+        - rabbit
 
   api:
     restart: always
     image: dev.trendever.com:5000/cryptobot/dev_api
-    working_dir: /project
-    networks:
-      - crypto
+    volumes:
+        - ${CONFIGS_PATH}/cryptobot/api.yaml:/api.yaml:ro
+    depends_on:
+        - rabbit
 
   db:
     restart: always
@@ -28,8 +33,6 @@ services:
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - dbdata:/var/lib/postgresql/data/pgdata:rw
-    networks:
-      - crypto
     ports:
       - 127.0.0.1:5433:5432
 
@@ -41,15 +44,10 @@ services:
       RABBITMQ_DEFAULT_PASS: "alert"
     volumes:
       - rabbitdata:/var/lib/rabbitmq:rw
-    networks:
-      - crypto
     ports:
       - 127.0.0.1:5672:5672
       # managment web interface
       - 127.0.0.1:8070:15672
-
-networks:
-  crypto:
 
 volumes:
   dbdata: {}
