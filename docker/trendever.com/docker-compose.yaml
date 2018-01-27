@@ -33,6 +33,8 @@ services:
       - "127.0.0.1:4004:4004"
     volumes:
      - /home/trendever/config/core:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   trendcoin:
     restart: always
@@ -40,6 +42,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/trendcoin:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   checker:
     restart: always
@@ -48,6 +52,8 @@ services:
     volumes:
      - /home/trendever/persistent:/var/persistent:rw
      - /home/trendever/config/checker:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   auth:
     restart: always  
@@ -55,6 +61,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/auth:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   api:
     restart: always  
@@ -71,6 +79,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/mail:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   sms:
     restart: always  
@@ -78,6 +88,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/sms:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   push:
     restart: always
@@ -86,6 +98,8 @@ services:
     volumes:
      - /home/trendever/config/apn:/var/persistent:ro
      - /home/trendever/config/push:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   chat:
     restart: always  
@@ -93,6 +107,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/chat:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   savetrend:
     restart: always  
@@ -125,6 +141,8 @@ services:
       - 127.0.0.1:7780:7780
     volumes:
      - /home/trendever/config/payments:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   elasticsync:
     restart: always
@@ -132,6 +150,8 @@ services:
     working_dir: /project
     volumes:
      - /home/trendever/config/elasticsync:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   accountstore:
     restart: always
@@ -142,6 +162,8 @@ services:
       - "10.8.0.1:5409:5409"
     volumes:
      - /home/trendever/config/accountstore:/project/config:ro
+    extra_hosts:
+     - "db:172.17.0.1"
 
   elastic:
     restart: always
