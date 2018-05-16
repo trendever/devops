@@ -117,18 +117,6 @@ services:
       - ETCD_HOST=http://etcd:2379
       - ETCD_PATH=dev/sms
 
-  push:
-    restart: always
-    image: dev.trendever.com:5000/services/dev_push
-    working_dir: /project
-    volumes:
-     - persistent:/var/persistent:ro
-    depends_on:
-      - etcd
-    environment:
-      - ETCD_HOST=http://etcd:2379
-      - ETCD_PATH=dev/push
-
   chat:
     restart: always  
     image: dev.trendever.com:5000/services/dev_chat

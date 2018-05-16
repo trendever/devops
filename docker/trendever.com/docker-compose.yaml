@@ -91,16 +91,6 @@ services:
     extra_hosts:
      - "db:172.17.0.1"
 
-  push:
-    restart: always
-    image: dev.trendever.com:5000/services/master_push
-    working_dir: /project
-    volumes:
-     - /home/trendever/config/apn:/var/persistent:ro
-     - /home/trendever/config/push:/project/config:ro
-    extra_hosts:
-     - "db:172.17.0.1"
-
   chat:
     restart: always  
     image: dev.trendever.com:5000/services/master_chat
