@@ -172,7 +172,17 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-     - /home/trendever/config/mandible:/project/config:ro
+      - /home/trendever/config/mandible:/project/config:ro
+
+  fetcher:
+    restart: always
+    image: dev.trendever.com:5000/services/master_fetcher
+    working_dir: /project
+    volumes:
+      - /home/trendever/config/fetcher:/project/config:ro
+    extra_hosts:
+      - "db:172.17.0.1"
+
 
 volumes:
   natsdata: {}
