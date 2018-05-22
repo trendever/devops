@@ -8,7 +8,6 @@ services:
     entrypoint: /nats-streaming-server -st file -dir /data -cid stan -SD -ma 0s -mb 0 -mm 100000
     ports:
       - "127.0.0.1:4222:4222"
-      - "10.8.0.1:4222:4222"
 
   influxdb:
     image: influxdb:alpine
@@ -149,7 +148,6 @@ services:
     working_dir: /project
     ports:
       - "127.0.0.1:5409:5409"
-      - "10.8.0.1:5409:5409"
     volumes:
      - /home/trendever/config/accountstore:/project/config:ro
     extra_hosts:
