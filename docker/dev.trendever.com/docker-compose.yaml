@@ -165,7 +165,7 @@ services:
 
   mandible:
     restart: always  
-    image: dev.trendever.com:5000/dev_mandible
+    image: dev.trendever.com:5000/services/dev_mandible
     working_dir: /project
     ports:
       - "127.0.0.1:8080:8080"
